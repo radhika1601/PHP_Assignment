@@ -6,10 +6,9 @@ $username = $password = $confirm_password = $name = $email = $gender = $mob_num 
 $username_err = $password_err = $confirm_password_err = $name_err = $email_err = $gender_err = $mob_num_err = "" ;
 
 
-if($_SERVER["REQUEST METHOD"] == "POST") {
+if($_SERVER["REQUEST_METHOD"] == "POST") {
 
-
-	if(empty(trim($_POST["name"])) {
+	if(empty(trim($_POST["name"]))) {
 		$name_err = "Name is required";
 	} else {
 		$name = sanitize_i($_POST["name"]);
@@ -19,7 +18,7 @@ if($_SERVER["REQUEST METHOD"] == "POST") {
 		}
 	}
 
-	if(empty(trim($_POST["username"])) {
+	if(empty(trim($_POST["username"]))) {
 		$username_err = "Username is required";
 	} else {
 		$username = sanitize_i($_POST["username"]);
@@ -81,19 +80,19 @@ if($_SERVER["REQUEST METHOD"] == "POST") {
 		$gender = sanitize_i($_POST["gender"]);
 	}
 
-	if(empty(trim($_POST["mob_num"])) {
+	if(empty(trim($_POST["mob_num"]))) {
 		$mob_num_err = "";
 	} else {
 		$mob_num = sanitize_i($_POST["mob_num"]);
 
-		if(!preg_match("/^(?:(?:\+|0{0,1})91(\s*[\-]\s*)?|[0]?)?[6-9]\d{4}[-]?\d{5}$/", $name)) {
+		if(!preg_match("/^(?:(?:\+|0{0,1})91(\s*[\-]\s*)?|[0]?)?[6-9]\d{4}[-]?\d{5}$/", $mob_num)) {
 			$mob_num_err = "Enter Mobile Number in write Format";
 		}
 	}
 
 	if(empty($name_err) && empty($username_err) && empty($password_err) && empty($confirm_password_err) && empty($email_err) && empty($gender_err) && empty($mob_num_err)) {
 
-		$sql = "INSERT INTO users (username, name , password, email, gender, mob_num) VALUES (:username, :name , :password, :email, :gender, :mob_num)"
+		$sql = "INSERT INTO radhika_user (username, name , password, email, gender, mob_num) VALUES (:username, :name , :password, :email, :gender, :mob_num)";
 
 		if($stmt = $pdo->prepare($sql)) {
 
@@ -112,7 +111,7 @@ if($_SERVER["REQUEST METHOD"] == "POST") {
             $param_mob_num = $mob_num;
 
             if($stmt->execute()) {
-            	header("location: profile.php");
+            	header("location: login.php");
             } else {
             	echo "Something went wrong. Please try again later.";
             }
@@ -138,7 +137,7 @@ function sanitize_i($data) {
 
 <h2>Sign Up</h2>
 
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 
 	<div>
 		<label>Name</label>
@@ -147,7 +146,7 @@ function sanitize_i($data) {
 	</div>
 	<div>
 		<label>Username</label>
-		<input type="text" name="username" value="<?php echo $username;?>">
+		<input type="text" name="username" value="<?php echo $username;?>" id="username">
 		<span class="error">* <?php echo $username_err; ?></span>
 	</div>
 	<div>
@@ -162,7 +161,7 @@ function sanitize_i($data) {
 	</div>
 	<div>
 		<label>Email</label>
-		<input type="text" name="name" value="<?php echo $email;?>">
+		<input type="text" name="email" value="<?php echo $email;?>">
 		<span class="error">* <?php echo $email_err; ?></span>
 	</div>
 	<div>
@@ -181,7 +180,10 @@ function sanitize_i($data) {
 	<div>
 		<label>Mobile Number</label>
 		<input type="text" name="mob_num" value="<?php echo $mob_num;?>">
-		<span class="error">* <?php echo $mob_num_err; ?></span>
+		<span class="error"><?php echo $mob_num_err; ?></span>
+	</div>
+	<div>
+		<input type="submit" value="SignUp">
 	</div>
 	
 </form>
