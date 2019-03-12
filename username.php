@@ -2,7 +2,7 @@
 
 require_once "conf.php";
 
-$usr = $_POST['usrname'];
+$usr = $HTTP_RAW_POST_DATA;
 $usr = json_decode($usr);
 
 $username = $usr->username ;
@@ -13,7 +13,7 @@ if($stmt = $pdo->prepare($sql)){
     
 	$stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
             
-	$param_username = $_POST["username"];
+	$param_username = $username;
             
 	if($stmt->execute()) {
 		if($stmt->rowCount() == 1) {

@@ -23,10 +23,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 	} else {
 		$username = sanitize_i($_POST["username"]);
 
-		if(!preg_match("/^[a-zA-Z]+([\.\s']?[a-zA-Z])*[a-zA-Z\.]*$/", $name)) {
-			$username_err = "Enter name in write Format";
-		}
-
 		$sql = "SELECT id FROM radhika_user WHERE username = :username";
 
 		if($stmt = $pdo->prepare($sql)){
@@ -132,6 +128,7 @@ function sanitize_i($data) {
 <!DOCTYPE HTML>  
 <html>
 <head>
+	
 </head>
 <body>  
 
@@ -146,7 +143,8 @@ function sanitize_i($data) {
 	</div>
 	<div>
 		<label>Username</label>
-		<input type="text" name="username" value="<?php echo $username;?>" id="username">
+		<input type="text" name="username" id="username" value="<?php echo $username;?>" >
+		<span id="uname" style="border-radius: 50%;"></span>
 		<span class="error">* <?php echo $username_err; ?></span>
 	</div>
 	<div>
@@ -187,3 +185,4 @@ function sanitize_i($data) {
 	</div>
 	
 </form>
+<script type="text/javascript" src="signup.js"></script>

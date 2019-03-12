@@ -33,7 +33,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 		if($stmt = $pdo->prepare($sql)) {
 
-			$stmt = $pdo->prepare($sql);
+			//$stmt = $pdo->prepare($sql);
 			$stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
 
 			$param_username = $username;
