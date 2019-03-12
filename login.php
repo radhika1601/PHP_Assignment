@@ -2,8 +2,7 @@
 
 session_start();
 
-if(isset($_SESSION["loggedin"])) && $_SESSION["loggedin"] === true )
-{
+if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true ) {
 	header("location: chat.php");
 	exit;
 }
@@ -33,7 +32,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 		if($stmt = $pdo->prepare($sql)) {
 
-			$stmt->bindParam(":username"; $param_username, PDO::PARAM_STR);
+			$stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
 
 			$param_username = $username;
 
