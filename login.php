@@ -47,6 +47,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 						$hashed_passwd = $row["password"] ;
 						if(password_verify($passwd, $hashed_passwd)) {
 
+							setcookie('user_name', $username, time()+86400*30);
 							session_start();
 							
 							// if(!empty($cook)) {
