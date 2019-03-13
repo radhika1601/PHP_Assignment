@@ -16,7 +16,7 @@
 	<form action="./upload.php" method="POST" enctype="multipart/form-data">
 		<div>
 			<label>Profile Picture</label>
-			<input type="file" name="fileToUpload">
+			<input type="file" name="pic">
 		</div>	
 		<div>
 			<label>Upload</label>
