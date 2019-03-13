@@ -1,10 +1,9 @@
 <?php
 
-session_start() ;
+setcookie("logged_in", "", time()-3600);
+setcookie("user_id", "", time()-3600);
+setcookie("user_name", "", time()-3600);
 
-$_SESSION = array();
-
-session_destroy();
 header("location: login.php");
 exit();
 ?>

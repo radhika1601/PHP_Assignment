@@ -141,6 +141,7 @@ function sanitize_i($data) {
   $data = htmlspecialchars($data);
   return $data;
 }
+
 ?>
 
 <!DOCTYPE HTML>  

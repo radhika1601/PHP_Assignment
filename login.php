@@ -1,15 +1,13 @@
 <?php
 
-session_start();
-
-if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true ) {
+if(isset($_COOKIE['loggedin']) ) {
 	header("location: index.php");
 	exit;
 }
 
 require_once "conf.php";
+include 'hash.php';
 
-$cook = "";
 $username = $passwd = "";
 $username_err = $passwd_err = "" ;
 
@@ -47,17 +45,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 						$hashed_passwd = $row["password"] ;
 						if(password_verify($passwd, $hashed_passwd)) {
 
+							setcookie('logged_in', $cook, time()+86400*30);
+							
 							setcookie('user_id', $id, time()+86400*30);
 							setcookie('user_name', $username, time()+86400*30);
-							session_start();
-							
-							// if(!empty($cook)) {
-							// 	setcookie('login', 'set' , time()+86400*28);
-							// }
-
-							$_SESSION["loggedin"] = true;
-							$_SESSION["id"] = $id;
-							$_SESSION["username"] = $username ;
 
 							header("location: index.php");
 						} else {

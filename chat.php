@@ -1,37 +1,43 @@
 <?php
 
+
 require_once "conf.php" ;
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if(isset($_COOKIE['logged_in'])) {
 
-	$usr1 = $_COOKIE['user_name'];
-	$usr2 = $_POST["usr2"];
+	if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-	$sql = "SELECT from_usr, msg FROM radhika_chat WHERE ( from_usr = :usr1 AND to_usr = :usr2 ) OR ( from_usr= :usr2 AND to_usr= :usr1)";
+		$usr1 = $_COOKIE['user_name'];
+		$usr2 = $_POST["usr2"];
 
-	if($stmt = $pdo->prepare($sql)) {
+		$sql = "SELECT from_usr, msg FROM radhika_chat WHERE ( from_usr = :usr1 AND to_usr = :usr2 ) OR ( from_usr= :usr2 AND to_usr= :usr1)";
 
-		$stmt->bindParam(":usr1", $param_from_usr, PDO::PARAM_STR);
-		$stmt->bindParam(":usr2", $param_to_usr, PDO::PARAM_STR);
+		if($stmt = $pdo->prepare($sql)) {
 
-		$param_to_usr = $usr2;
-		$param_from_usr = $usr1 ;
+			$stmt->bindParam(":usr1", $param_from_usr, PDO::PARAM_STR);
+			$stmt->bindParam(":usr2", $param_to_usr, PDO::PARAM_STR);
+
+			$param_to_usr = $usr2;
+			$param_from_usr = $usr1 ;
 
 
-		$chat = array();
+			$chat = array();
 
-		if ($stmt->execute()) {
-			while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-				$chat[] = $row;
-			}
-		}	
+			if ($stmt->execute()) {
+				while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+					$chat[] = $row;
+				}
+			}	
+		}
+		unset($sql);
+		unset($stmt);
+
 	}
-	unset($sql);
-	unset($stmt);
 
+	$msg="";
+} else {
+	header("location: login.php");
 }
-
-$msg="";
 ?>
 
 <!DOCTYPE html>

@@ -2,7 +2,7 @@
 require_once "conf.php" ;
 session_start();
 
-if((!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true)) {
+if(!isset($_COOKIE['logged_in'])) {
 	header("location: login.php");
 	exit;
 } else {
