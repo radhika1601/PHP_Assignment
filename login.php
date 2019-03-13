@@ -2,14 +2,14 @@
 
 session_start();
 
-if(isset($_SESSION["loggedin"])) && $_SESSION["loggedin"] === true )
-{
-	header("location: chat.php");
+if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true ) {
+	header("location: index.php");
 	exit;
 }
 
 require_once "conf.php";
 
+$cook = "";
 $username = $passwd = "";
 $username_err = $passwd_err = "" ;
 
@@ -24,16 +24,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 	if(empty(trim($_POST["passwd"]))) {
 		$passwd_err = "Please enter the password." ;
 	} else {
-		$passwd = sanitize_i($_POST["password"]);
+		$passwd = sanitize_i($_POST["passwd"]);
 	}
 
 	if (empty($username_err) && empty($passwd_err)) {
 		
-		$sql = "SELECT id, username, password FROM users WHERE username = ?" ;
+		$sql = "SELECT id, username, password FROM radhika_user WHERE username = :username" ;
 
 		if($stmt = $pdo->prepare($sql)) {
 
-			$stmt->bindParam(":username"; $param_username, PDO::PARAM_STR);
+			//$stmt = $pdo->prepare($sql);
+			$stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
 
 			$param_username = $username;
 
@@ -46,19 +47,24 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 						$hashed_passwd = $row["password"] ;
 						if(password_verify($passwd, $hashed_passwd)) {
 
+							setcookie('user_name', $username, time()+86400*30);
 							session_start();
+							
+							// if(!empty($cook)) {
+							// 	setcookie('login', 'set' , time()+86400*28);
+							// }
 
 							$_SESSION["loggedin"] = true;
 							$_SESSION["id"] = $id;
 							$_SESSION["username"] = $username ;
 
-							header("location: chat.php");
+							header("location: index.php");
 						} else {
-							$passwd_err = "Invalid password."
+							$passwd_err = "Invalid password.";
 						}
 					}
 				} else {
-					$username_err = "No account exists with the above Username."
+					$username_err = "No account exists with the above Username.";
 				}
 			} else {
 				echo "Something went wrong. Please try again later." ;
@@ -66,7 +72,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 		}
 		unset($stmt);
 	}
-
 	unset($pdo);
 }
 
@@ -94,8 +99,8 @@ function sanitize_i($data) {
 			<span><?php echo $username_err; ?></span>
 		</div>
 		<div>
-			<label>Username</label>
-			<input type="password" name="password">
+			<label>Password</label>
+			<input type="password" name="passwd" value="<?php echo $passwd; ?>">
 			<span><?php echo $passwd_err; ?></span>
 		</div>
 		<div>
