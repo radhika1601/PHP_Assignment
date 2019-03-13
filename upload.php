@@ -2,43 +2,50 @@
 
 require_once "conf.php" ;
 
-$target_dir = "public_html/";
+$uid = $_COOKIE['user_id'];
+$uname = $_COOKIE['user_name'];
+if (isset($_POST['submit'])) {
+	$pic = $_FILES['pic'];
 
-if ($_SERVER["REQUEST_METHOD"]=="POST") {
-	$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
-	$uploadOk = 1;
+	$fileName = $_FILES['pic']['name'];
+	$fileTmpName = $_FILES['pic']['tmp_name'];
+	$fileSize = $_FILES['pic']['size'];
+	$fileError = $_FILES['pic']['error'];
+	$fileType = $_FILES['pic']['type'];
 
-	$imgFiletype = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+	$fileExt = explode('.', $fileName);
+	$fileActualExt = strtolower(end($fileExt));
 
+	$allowed = array('jpg' ,'jpeg', 'png');
 
-	if(isset($_POST["submit"])) {
+	if (in_array($fileActualExt, $allowed)) {
+		if ($fileError === 0) {
+			if ($fileSize < 100000) {
+				$fileNameNew = $uid. "." .$fileActualExt;
+				$fileDestination = "./uploads/".$fileNameNew ;
+				//var_dump($fileDestination);
+				chmod($_FILES['pic']['tmp_name'], 0777);
+				//chmod("./uploads/", 0777);
+				move_uploaded_file($fileTmpName, $fileDestination);
+				//
 
-		$check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+				$sql = "UPDATE radhika_img SET status=true WHERE id=:uid";
+				$stmt = $pdo->prepare($sql);
+				$stmt->bindParam(":uid", $param_id , PDO::PARAM_STR);
+            	$param_id = $uid ;
 
-		if ($check !== false) {
-			echo "File is an image" . $check["mime"] . ".";
-			$uploadOk = 1;
+            	$stmt->execute();
+            	header("location: profile.php");
+
+			} else {
+				echo "Very large fileSize";
+			}
 		} else {
-			echo "File is not an Image." ;
-			$uploadOk = 0;
-		}
-	}
-
-	if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-	&& $imageFileType != "gif" ) {
-	    echo "Please upload JPG, JPEG, PNG or GIF file.";
-	    $uploadOk = 0;
-	}
-
-	if ($uploadOk == 0) {
-		echo "Image not uploaded.";
+			echo "There was some error uploading the image." ;
+		}	
 	} else {
-		if(move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-			echo "Image has been Uploaded.";
-		} else {
-			echo "Sorry, there was some error uploading the image.";
-		}
-	}	
+		echo "Profile picture should be in jpg, jpeg, png." ;
+	}
 }
 
 ?>

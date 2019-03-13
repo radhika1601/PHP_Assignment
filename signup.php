@@ -107,6 +107,24 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             $param_mob_num = $mob_num;
 
             if($stmt->execute()) {
+
+            	$sql2 = "SELECT id FROM radhika_user WHERE username = :username";
+
+            	$stmt2 = $pdo->prepare($sql2);
+            	$stmt2->bindParam(":username", $param_username, PDO::PARAM_STR);
+            	$param_username = $username ;
+
+            	$stmt2->execute();
+            	$row = $stmt2->fetch();
+            	$id = $row['id'];
+
+            	$sql3 = "INSERT INTO radhika_img (id, status) VALUES (:id , false )" ;
+            	$stmt3=$pdo->prepare($sql3);
+				$stmt3->bindParam(":id", $param_id, PDO::PARAM_STR);
+            	$param_id = $id ;
+
+            	$stmt3->execute();
+
             	header("location: login.php");
             } else {
             	echo "Something went wrong. Please try again later.";
